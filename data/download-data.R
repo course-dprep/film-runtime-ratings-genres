@@ -27,9 +27,9 @@ url_basics <- "https://datasets.imdbws.com/title.basics.tsv.gz"
 url_ratings <- "https://datasets.imdbws.com/title.ratings.tsv.gz"
 
 # Load the 'title.basics' and 'title.ratings' data using the custom function.
-title_basics <- get_imdb_data(url_basics, "title.basics.tsv.gz")
-title_ratings <- get_imdb_data(url_ratings, "title.ratings.tsv.gz")
+basics <- get_imdb_data(url_basics, "title.basics.tsv.gz")
+ratings <- get_imdb_data(url_ratings, "title.ratings.tsv.gz")
 
 # (Optional) View the first few rows of the data frames
-# head(title_basics)
-# head(title_ratings)
+# head(basics)
+# head(ratings)
