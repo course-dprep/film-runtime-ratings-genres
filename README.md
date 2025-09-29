@@ -18,15 +18,12 @@ The variables we have kept in the final dataset can be found in the variable ope
 
 Variable operationalization table:
 
-| Variable | Type | Category of Data | Operationalization | Dataset |
+| variable | type | category of data | operationalization | dataset |
 |----|----|----|----|----|
-| runtimeMinutes | Independent variable | Metric | Run time of each movie in minutes | title.basics.tsv |
-| averageRating | Dependent variable | Metric | Audience rating of each movie on a scale 0-10 | title-ratings.tsv |
-| genres | Moderator | Categorical | Genre(s) of each movie | title-basics.tsv |
-| numVotes | Descriptive | Metric | Number of votes from the audience on rating | title-ratings.tsv |
-| primaryTitle | Descriptive | Categorical | Title of each movie | title-basics.tsv |
-| startYear | Descriptive | Numeric | The year in which the movie came out | title-basics.tsv |
-| tconst | Descriptive | Numeric | Unique identifier of the title | both datasets |
+| runtimeMinutes | independent variable | metric | Run time of each movie in minutes | title.basics.tsv |
+| averageRating | dependent variable | metric | Audience rating of each movie on a scale of 0 to 10 | title.ratings.tsv |
+| genres | moderator | categorical | Genre(s) of each movie | title.basics.tsv |
+| startYear | control variable | numeric | The year in which the movie came out | title.basics.tsv |
 
 ## Method
 
