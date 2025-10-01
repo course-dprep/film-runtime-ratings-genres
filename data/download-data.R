@@ -33,3 +33,10 @@ title_ratings <- get_imdb_data(url_ratings, "title.ratings.tsv.gz")
 # (Optional) View the first few rows of the data frames
 # head(title_basics)
 # head(title_ratings)
+
+# Export merged dataset (unfiltered)
+merged_unfiltered <- left_join(title_ratings, title_basics, by = "tconst") %>%
+  mutate(across(everything(), ~ ifelse(.x == "\\N", NA, .x)))
+
+write_csv(merged_unfiltered, "data/merged_unfiltered.csv")
+
