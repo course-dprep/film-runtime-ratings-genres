@@ -45,12 +45,40 @@ process_movie_data <- function(basics_df, ratings_df, output_dir) {
         averageRating >= 7.0 ~ "Good",
         averageRating >= 5.0 ~ "Average",
         TRUE ~ "Poor"
-      ), levels = c("Poor", "Average", "Good", "Excellent")),
+      ), levels = c("Poor", "Average", "Good", "Excellent")))
       
-      primary_genre = str_split(genres, ",", simplify = TRUE)[, 1],  #Extracts the first listed genre as the primary genre.
-      
-      genre_count = str_count(genres, ",") + 1  #Counts the number of genres associated with each movie.
+     # Find out the 3 most common genres to keep in the dataset
+  # Count genres
+  genre_count <- cleaned_movies %>%
+    separate_rows(genre_list, sep = ",") %>%
+    mutate(genre_list = str_trim(genre_list)) %>%
+    count(genre_list, sort = TRUE)
+  genre_count
+  
+  # Only keep movies with genre Drama, Comedy, or Romance, no duplicates
+  top3_genres <- genre_counts %>% 
+    slice_max(n, n = 3)
+  top3_genres
+  cleaned_movies <- cleaned_movies %>%
+    filter(str_detect(genre_list, paste(top3_genres$genre_list, collapse = "|")))
+    
+    #Renaming Variables
+    rename(
+      movie_id = tconst,
+      avg_rating = averageRating,
+      runtime_min = runtimeMinutes,
+      genre_list = genres,
+      num_votes = numVotes
     ) %>%
+    
+    #Select and reorder columns for a clean final output.
+    select(
+      movie_id,
+      avg_rating,
+      num_votes,
+      runtime_min,
+      rating_category,
+      genre_list
     
     #Renaming Variables
     rename(
