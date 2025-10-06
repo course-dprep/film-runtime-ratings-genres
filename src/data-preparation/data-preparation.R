@@ -45,24 +45,9 @@ process_movie_data <- function(basics_df, ratings_df, output_dir) {
         averageRating >= 7.0 ~ "Good",
         averageRating >= 5.0 ~ "Average",
         TRUE ~ "Poor"
-      ), levels = c("Poor", "Average", "Good", "Excellent")))
-      
-     # Find out the 3 most common genres to keep in the dataset
-  # Count genres
-  genre_count <- cleaned_movies %>%
-    separate_rows(genre_list, sep = ",") %>%
-    mutate(genre_list = str_trim(genre_list)) %>%
-    count(genre_list, sort = TRUE)
-  genre_count
-  
-  # Only keep movies with genre Drama, Comedy, or Romance, no duplicates
-  top3_genres <- genre_counts %>% 
-    slice_max(n, n = 3)
-  top3_genres
-  cleaned_movies <- cleaned_movies %>%
-    filter(str_detect(genre_list, paste(top3_genres$genre_list, collapse = "|")))
-    
-    #Renaming Variables
+      ), levels = c("Poor", "Average", "Good", "Excellent"))) %>%
+
+   #Renaming Variables
     rename(
       movie_id = tconst,
       avg_rating = averageRating,
@@ -70,38 +55,29 @@ process_movie_data <- function(basics_df, ratings_df, output_dir) {
       genre_list = genres,
       num_votes = numVotes
     ) %>%
-    
-    #Select and reorder columns for a clean final output.
+
+  #Select and reorder columns for a clean final output.
     select(
       movie_id,
       avg_rating,
       num_votes,
       runtime_min,
       rating_category,
-      genre_list
-    
-    #Renaming Variables
-    rename(
-      movie_id = tconst,
-      avg_rating = averageRating,
-      runtime_min = runtimeMinutes,
-      genre_list = genres,
-      num_votes = numVotes
-    ) %>%
-    
-    #Select and reorder columns for a clean final output.
-    select(
-      movie_id,
-      avg_rating,
-      num_votes,
-      runtime_min,
-      rating_category,
-      primary_genre,
-      genre_count,
       genre_list
     )
   
-  #Writing the cleaned data to a CSV file
+#Find the top 3 most common genres and filter movies to only those genres
+top3_genres <- movies_clean %>%
+  separate_rows(genre_list, sep = ",") %>%   
+  mutate(genre_list = str_trim(genre_list)) %>%
+  count(genre_list, sort = TRUE) %>%
+  slice_head(n = 3)
+  
+movies_clean <- movies_clean %>%
+filter(str_detect(genre_list, paste(top3_genres$genre_list, collapse = "|")))
+    
+   
+#Writing the cleaned data to a CSV file
   output_file <- file.path(output_dir, "movies_clean.csv")
   write_csv(movies_clean, output_file)
   message(paste("Cleaned data saved to:", output_file))
