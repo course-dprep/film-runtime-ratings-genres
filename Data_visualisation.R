@@ -1,5 +1,7 @@
 getwd()
 
+movies_clean <- read.csv (movies_clean.csv)
+
 install.packages("patchwork")
 library(patchwork)
 library(dplyr)
@@ -50,3 +52,13 @@ final_plot <- (wrap_plots(plots, ncol = 3)) /
   (wrap_plots(plots_box, ncol = 3))
 
 print(final_plot)
+
+ggsave(
+  filename = file.path(getwd(), "final_plot.png"),
+  plot = final_plot,                               
+  width = 12, height = 8,                          
+  dpi = 300                                        
+)
+
+
+                    
