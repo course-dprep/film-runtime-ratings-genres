@@ -43,7 +43,7 @@ Variable operationalization table:
 ## Dependencies
 
 To be able to run this project, the following software needs to be installed:
-- R and R studio - Please follow these instructions to install R and R studio on your computer https://tilburgsciencehub.com/topics/Computer-Setup/software-installation/RStudio/r/
+- **R and R studio** - Please follow these instructions to install R and R studio on your computer https://tilburgsciencehub.com/topics/Computer-Setup/software-installation/RStudio/r/
   - Install the following packages:
     - tidyverse
     - dplyr
@@ -54,8 +54,8 @@ To be able to run this project, the following software needs to be installed:
     - patchwork
     - ggplot2
   
-- Git - Please follow these instructions to install Git on your computer https://tilburgsciencehub.com/topics/Automation/version-control/start-git/git/
-- Make - Please follow these instructions to install Make on your coputer https://tilburgsciencehub.com/topics/Automation/automation-tools/Makefiles/make/
+- **Git** - Please follow these instructions to install Git on your computer https://tilburgsciencehub.com/topics/Automation/version-control/start-git/git/
+- **Make** - Please follow these instructions to install Make on your coputer https://tilburgsciencehub.com/topics/Automation/automation-tools/Makefiles/make/
 
 ## Running Instructions
 
