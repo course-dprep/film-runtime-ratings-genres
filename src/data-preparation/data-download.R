@@ -13,6 +13,7 @@ get_imdb_data <- function(url, file_name) {
   
   # Download the file only if it doesn't already exist locally.
   if (!file.exists(local_path)) {
+    options(timeout = 300)
     download.file(url = url, destfile = local_path, mode = "wb")
   }
   
@@ -30,6 +31,19 @@ url_ratings <- "https://datasets.imdbws.com/title.ratings.tsv.gz"
 basics <- get_imdb_data(url_basics, "title.basics.tsv.gz")
 ratings <- get_imdb_data(url_ratings, "title.ratings.tsv.gz")
 
+# Prepare the names for the CSV output files (remove .gz part)
+basics_csv <- "data/title_basics.csv"
+ratings_csv <- "data/title_ratings.csv"
+
+# Write the data frames to CSV (without the .gz part in the filename)
+write_csv(basics, basics_csv)
+write_csv(ratings, ratings_csv)
+
+# Optionally, delete the original .tsv.gz files after conversion
+file.remove("data/title.basics.tsv.gz")
+file.remove("data/title.ratings.tsv.gz")
+
 # (Optional) View the first few rows of the data frames
 # head(basics)
 # head(ratings)
+
