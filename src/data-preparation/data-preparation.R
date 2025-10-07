@@ -4,8 +4,12 @@ library(dplyr)
 library(readr)
 library(here) 
 
+#Load dataset
+basics <- read_csv("data/basics.csv")
+ratings <- read_csv("data/ratings.csv")
+
 #Define a function to process and clean the movie data
-process_movie_data <- function(basics_df, ratings_df, output_dir) {
+process_movie_data <- function(basics, ratings, output_dir) {
   
   #Create the output directory if it doesn't exist
   if (!dir.exists(output_dir)) {
@@ -14,7 +18,7 @@ process_movie_data <- function(basics_df, ratings_df, output_dir) {
   }
   
   #Merging datasets
-  merged_unfiltered <- left_join(ratings_df, basics_df, by = "tconst")
+  merged_unfiltered <- left_join(ratings, basics, by = "tconst")
   
   #Identifying and replacing "\\N" with NA
   merged_unfiltered <- merged_unfiltered %>%
@@ -97,7 +101,7 @@ output_directory <- here("gen", "data_preparation", "output")
 
 #Call the function to process the data
 cleaned_movies <- process_movie_data(
-  basics_df = basics,
-  ratings_df = ratings,
+  basics = basics,
+  ratings = ratings,
   output_dir = output_directory
 )
