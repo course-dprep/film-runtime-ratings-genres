@@ -7,7 +7,7 @@ library(here)
 #Define a function to process and clean the movie data
 process_movie_data <- function(basics_df, ratings_df, output_dir) {
   
- #Create the output directory if it doesn't exist
+  #Create the output directory if it doesn't exist
   if (!dir.exists(output_dir)) {
     dir.create(output_dir, recursive = TRUE)
     message(paste("Output directory created at:", output_dir))
@@ -28,7 +28,7 @@ process_movie_data <- function(basics_df, ratings_df, output_dir) {
     #Filter for movies with 250 or more reviews (numVotes).
     filter(numVotes >= 250) %>%
     
-    #Select all columns needed for subsequent steps. `numVotes` is included here so we can rename it to `num_votes` at the end.
+    #Select all columns needed for subsequent steps.
     select(tconst, averageRating, runtimeMinutes, genres, numVotes) %>%
     
     #Convert runtimeMinutes from character to numeric.
@@ -36,20 +36,15 @@ process_movie_data <- function(basics_df, ratings_df, output_dir) {
     
     #Filter out movies with NA in runtimeMinutes/genres, and filter for runtime outliers.
     filter(!is.na(runtimeMinutes) & runtimeMinutes > 30 & runtimeMinutes < 250 & !is.na(genres)) %>%
-  
-  #Variable Creation
+    
+    #Variable Creation
     mutate(
-      #Creates a categorical variable for ratings
       rating_category = factor(case_when(
         averageRating >= 8.5 ~ "Excellent",
         averageRating >= 7.0 ~ "Good",
         averageRating >= 5.0 ~ "Average",
         TRUE ~ "Poor"
-      ), levels = c("Poor", "Average", "Good", "Excellent")),
-      
-      primary_genre = str_split(genres, ",", simplify = TRUE)[, 1],  #Extracts the first listed genre as the primary genre.
-      
-      genre_count = str_count(genres, ",") + 1  #Counts the number of genres associated with each movie.
+      ), levels = c("Poor", "Average", "Good", "Excellent"), ordered = TRUE)
     ) %>%
     
     #Renaming Variables
@@ -61,17 +56,31 @@ process_movie_data <- function(basics_df, ratings_df, output_dir) {
       num_votes = numVotes
     ) %>%
     
-    #Select and reorder columns for a clean final output.
+    #Select and reorder columns
     select(
       movie_id,
       avg_rating,
       num_votes,
       runtime_min,
       rating_category,
-      primary_genre,
-      genre_count,
       genre_list
     )
+  
+  #Find the top 3 most common genres 
+  top3_genres <- movies_clean %>%
+    separate_rows(genre_list, sep = ",") %>%
+    mutate(genre_list = str_trim(genre_list)) %>%
+    count(genre_list, sort = TRUE) %>%
+    slice_head(n = 3) %>%
+    pull(genre_list)
+  
+  message("Today's top 3 genres: ", paste(top3_genres, collapse = ", "))
+  
+  #Create dummy columns for the top 3 genres
+  for (g in top3_genres) {
+    movies_clean[[paste0(g, "_dummy")]] <- as.integer(str_detect(movies_clean$genre_list, g))
+  }
+  
   
   #Writing the cleaned data to a CSV file
   output_file <- file.path(output_dir, "movies_clean.csv")
