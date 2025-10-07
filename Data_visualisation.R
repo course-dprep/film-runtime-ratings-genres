@@ -1,18 +1,30 @@
-getwd()
-
-movies_clean <- read.csv (movies_clean.csv)
-
 install.packages("patchwork")
 library(patchwork)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 
+#Define analysis output directory
+analysis_output_dir <- here("gen", "data_analysis", "output")
+
+#Create analysis output directory if it doesn't exist
+if(!dir.exists(analysis_output_dir)) {
+  dir.create(analysis_output_dir, recursive = TRUE)
+  message(paste("Analysis output directory created at:", analysis_output_dir))
+} else {
+  message(paste("Analysis output directory already exists at:", analysis_output_dir))
+}
+
+#Load the cleaned dataset for modeling
+movies_clean <- read_csv(here("gen", "data_preparation", "output", "movies_clean.csv"))
+
 #Top 3 genres
 top3_genres <- movies_clean %>%
-  count(primary_genre, sort = TRUE) %>%
+  separate_rows(genre_list, sep = ",") %>%
+  mutate(genre_list = str_trim(genre_list)) %>%
+  count(genre_list, sort = TRUE) %>%
   slice_head(n = 3) %>%
-  pull(primary_genre)
+  pull(genre_list)
 
 #Function for scatterplots
 make_scatterplot <- function(df, genre_name) {
