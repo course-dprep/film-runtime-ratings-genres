@@ -49,7 +49,7 @@ Variable operationalization table:
 To be able to replicate this project, please follow these instructions
 1) **Fork this repository:** Click the "Fork" button at the top right of the GitHub page to create your own copy of the repository.
    
-2) **Clone the repository to your own computer via the command line/terminal:** Open your terminal and run the following command, replacing <your-username> with your GitHub username:
+2) **Clone the repository to your own computer via the command line/terminal:** Open your terminal and run the following command
 
    *git clone https://github.com/course-dprep/film-runtime-ratings-genres.git*
    
