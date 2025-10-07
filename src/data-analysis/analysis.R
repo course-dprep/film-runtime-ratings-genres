@@ -22,8 +22,13 @@ movies_clean <- read_csv(here("gen", "data_preparation", "output", "movies_clean
 
 #Start with exploratory analysis so without moderator 
 #Convert rating_category to numeric for exploratory analyses, as these analyses require numeric DV's
-movies_clean <- movies_clean %>% 
-  mutate(rating_num = as.numeric(rating_category))
+movies_clean$rating_category <- factor(
+  movies_clean$rating_category,
+  levels = c("Poor", "Average", "Good", "Excellent"),
+  ordered = TRUE
+)
+
+movies_clean$rating_num <- as.numeric(movies_clean$rating_category)
 
 #Exploratory linear regression: simple linear model
 linear_regression <- lm((rating_num ~ runtime_min), movies_clean)
