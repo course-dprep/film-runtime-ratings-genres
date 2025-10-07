@@ -67,7 +67,7 @@ process_movie_data <- function(basics_df, ratings_df, output_dir) {
     )
   
 #Find the top 3 most common genres and filter movies to only those genres
-top3_genres <- movies_clean %>%
+top3_genres <- cleaned_movies %>%
   separate_rows(genre_list, sep = ",") %>%   
   mutate(genre_list = str_trim(genre_list)) %>%
   count(genre_list, sort = TRUE) %>%
