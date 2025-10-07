@@ -59,7 +59,20 @@ To be able to run this project, the following software needs to be installed:
 
 ## Running Instructions
 
-*Provide step-by-step instructions that have to be followed to run this workflow.*
+To be able to replicate this project, please follow these instructions
+1) **Fork this repository:** Click the "Fork" button at the top right of the GitHub page to create your own copy of the repository.
+   
+2) **Clone the repository to your own computer via the command line/terminal:** Open your terminal and run the following command
+
+   *git clone https://github.com/course-dprep/film-runtime-ratings-genres.git*
+   
+3) **Navigate to the project directory:**
+
+    *cd film-runtime-ratings-genres*
+
+5) **Run the following command in a newly created directory:**
+
+   *make*
 
 ## About
 
