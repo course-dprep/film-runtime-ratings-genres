@@ -56,6 +56,13 @@ Anova(ordinal_log_regression)
 sink()
 
 #Ordinal logistic regression with moderator
+
+model_data <- movies_clean %>%
+  select(rating_category, runtime_min, ends_with("_dummy"))
+ordinal_log_regression2 <- polr(rating_category ~ ., data = model_data, Hess = TRUE)
+
+
+
 ordinal_log_regression2 <- polr(rating_category ~ runtime_min * genre_list, data = movies_clean, Hess = TRUE)
 sink(file.path(analysis_output_dir, "ordinal_log_regression_with_genre_summary.txt"))
 summary(ordinal_log_regression2)
