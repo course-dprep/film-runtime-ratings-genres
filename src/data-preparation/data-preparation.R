@@ -44,7 +44,7 @@ process_movie_data <- function(basics_df, ratings_df, output_dir) {
         averageRating >= 7.0 ~ "Good",
         averageRating >= 5.0 ~ "Average",
         TRUE ~ "Poor"
-      ), levels = c("Poor", "Average", "Good", "Excellent"))
+      ), levels = c("Poor", "Average", "Good", "Excellent"), ordered = TRUE)
     ) %>%
     
     #Renaming Variables
