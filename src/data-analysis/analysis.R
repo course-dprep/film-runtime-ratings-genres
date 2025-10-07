@@ -57,10 +57,10 @@ sink()
 
 #Ordinal logistic regression with moderator
 
-# Get dummy variable names
+#Get dummy variable names
 dummy_vars <- names(movies_clean)[grepl("_dummy$", names(movies_clean))]
 
-# Build full formula with interactions
+#Build the formula for the regression
 formula_str <- paste(
   "rating_category ~ runtime_min +",
   paste(dummy_vars, collapse = " + "),
@@ -69,15 +69,12 @@ formula_str <- paste(
 )
 full_formula <- as.formula(formula_str)
 
-# Select model data (fix: use dplyr::select)
+#Select model data 
 model_data <- dplyr::select(movies_clean, rating_category, runtime_min, all_of(dummy_vars))
 
-# Fit model
+#Run the actual model
 ordinal_log_regression2 <- polr(full_formula, data = model_data, Hess = TRUE)
-
-# Output results
 sink(file.path(analysis_output_dir, "ordinal_log_regression_with_genre_summary.txt"))
 summary(ordinal_log_regression2)
 Anova(ordinal_log_regression2)
 sink()
-
