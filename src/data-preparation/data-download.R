@@ -32,8 +32,8 @@ basics <- get_imdb_data(url_basics, "title.basics.tsv.gz")
 ratings <- get_imdb_data(url_ratings, "title.ratings.tsv.gz")
 
 # Prepare the names for the CSV output files (remove .gz part)
-basics_csv <- "data/title_basics.csv"
-ratings_csv <- "data/title_ratings.csv"
+basics_csv <- "data/basics.csv"
+ratings_csv <- "data/ratings.csv"
 
 # Write the data frames to CSV (without the .gz part in the filename)
 write_csv(basics, basics_csv)
