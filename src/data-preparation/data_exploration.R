@@ -17,8 +17,10 @@ glimpse(merged_unfiltered)
 summary(merged_unfiltered)
 
 # Count missing values per column
-na_counts <- colSums(is.na(merged_unfiltered))
-print(na_counts)
+na_summary <- merged_unfiltered %>%
+  summarise(across(everything(), ~sum(is.na(.))))
+
+print(na_summary)
 
 # Check runtime distribution
 merged_unfiltered <- merged_unfiltered %>%
