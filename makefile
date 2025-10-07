@@ -1,3 +1,6 @@
+all: movies_clean.csv
+	R -- vanilla < movies_clean.csv
+
 basics.csv ratings.csv: src/data-preparation/data-download.R
 	R --vanilla < src/data-preparation/data-download.R
 	
