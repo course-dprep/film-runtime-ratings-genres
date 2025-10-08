@@ -2,9 +2,11 @@
 
 # Load packages
 library(tidyverse)
+library(readr)
+library(dplyr)
 
-#basics <- read_tsv("title.basics.tsv")
-#ratings <- read_tsv("title.ratings.tsv")
+basics <- read_csv("data/basics.csv")
+ratings <- read_csv("data/ratings.csv")
 
 #merge dataset
 merged_unfiltered <- left_join(ratings, basics, by = "tconst")
@@ -33,4 +35,9 @@ summary(merged_unfiltered$runtimeMinutes)
 cat("Average Rating summary: ")
 summary(merged_unfiltered$averageRating)
 
+# Write  to a CSV file named "outcome.csv"
+write_csv(merged_unfiltered, "outcome.csv")
+
+# Print a confirmation message
+cat("\n'outcome.csv' file has been successfully created in your working directory.\n")
 
