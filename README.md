@@ -16,7 +16,7 @@ In order to investigate the relationship between a film's runtime and its averag
 
 The variables included in the final dataset are presented in the variable operationalization table. Source variables are used only to create variables relevant to the analysis. The number of votes is a control variable and was used to determine how reliable the rating of each movie is. The variable movie_id was used to merge the two datasets. This ensures that ratings are correctly matched to each movie, along with its runtime and genre, since this variable is the only one shared between both datasets. 
 
-Variable operationalization table:
+**Variable operationalization table:**
 
 | variable | type | category of data | operationalization | dataset |
 |----|----|----|----|----|
