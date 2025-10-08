@@ -86,8 +86,6 @@ The project is implemented by team 6:
 
 -   Jelle van der Eng ([j.b.vdreng\@tilburguniversity.edu](mailto:j.b.vdreng@tilburguniversity.edu))
 
--   Iris Kiens ([i.s.l.kiens\@tilburguniversity.edu](mailto:j.b.vdreng@tilburguniversity.edu))
-
 -   Dana Raats ([d.f.m.raats\@tilburguniversity.edu](mailto:j.b.vdreng@tilburguniversity.edu))
 
 -   Renata Serrano ([r.m.serranoquiteno\@tilburguniversity.edu](mailto:r.m.serranoquiteno@tilburguniversity.edu))
