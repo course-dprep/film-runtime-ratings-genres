@@ -20,10 +20,13 @@ Variable operationalization table:
 
 | variable | type | category of data | operationalization | dataset |
 |----|----|----|----|----|
-| runtimeMinutes | independent variable | metric | Run time of each movie in minutes | title.basics.tsv |
-| averageRating | dependent variable | metric | Audience rating of each movie on a scale of 0 to 10 | title.ratings.tsv |
-| genres | moderator | categorical | Genre(s) of each movie | title.basics.tsv |
-| startYear | control variable | numeric | The year in which the movie came out | title.basics.tsv |
+| runtime_min | independent variable | metric | Run time of each movie in minutes | title.basics.tsv |
+| rating_category | dependent variable | categorical | Audience rating of each movie: poor, average, good, or excellent | derived from avg_rating |
+| genre dummies | moderator | categorical | Indicates whether the movie is of a certain genre | derived from genre_list |
+| movie_id | identifier | numeric | ID of the movie | title.basics.tsv/title.ratings.tsv |
+| avg_rating | source variable | metric | Audience rating of each movie on a scale of 0 to 10 | title.ratings.tsv |
+| genre_list | source variable | categorical | Genre(s) of each movie | title.basics.tsv | 
+| num_votes | control variable | numeric | Total number of ratings a movie received | title.ratings.tsv |
 
 ## Method
 
