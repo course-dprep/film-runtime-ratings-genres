@@ -10,3 +10,4 @@ provider: openAI
 - Find out how to get the top 3 most common genres in data-preparation with changing data and create dummies from it
 - Find out which model (the model with moderator) fits best with the data and create code for this regression
 - Find out how to save the regression outputs
+- Find out how to create a repository overview as a tree
