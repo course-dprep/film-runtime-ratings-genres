@@ -63,7 +63,7 @@ To be able to run this project, the following software needs to be installed:
     - stringr
     - tidyr
       
-By running the following code: **install.packages(c("tidyverse", "dplyr", "readr", "here", "MASS", "car", "patchwork", "ggplot2"))**
+By running the following code: **install.packages(c("tidyverse", "dplyr", "readr", "here", "MASS", "car", "patchwork", "ggplot2", "stringr", "tidyr"))**
   
 - **Git** - Please follow these instructions to install Git on your computer https://tilburgsciencehub.com/topics/Automation/version-control/start-git/git/
 - **Make** - Please follow these instructions to install Make on your coputer https://tilburgsciencehub.com/topics/Automation/automation-tools/Makefiles/make/
