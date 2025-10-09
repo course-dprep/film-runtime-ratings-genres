@@ -60,6 +60,8 @@ To be able to run this project, the following software needs to be installed:
     - car
     - patchwork
     - ggplot2
+    - stringr
+    - tidyr
       
 By running the following code: **install.packages(c("tidyverse", "dplyr", "readr", "here", "MASS", "car", "patchwork", "ggplot2"))**
   
