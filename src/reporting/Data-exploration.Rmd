@@ -1,0 +1,156 @@
+---
+title: "Data Exploration: Analysis of Combined IMDb Title Basics and Ratings Data"
+
+author: "Group 6: Roos van den Berg, Jelle van der Eng, Dana Raats, Renata Serrano "
+
+date: "2025-10-10"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+
+# 1. Load necessary packages
+library(tidyverse)
+library(dplyr)
+library(readr)
+library(here) 
+library(knitr)
+
+knitr::opts_chunk$set(
+  echo = FALSE, 
+  warning = FALSE,
+  message = FALSE
+  )
+```
+
+## 1. Introduction
+
+This report provides a comprehensive analysis of a data set created by merging two files from the Internet Movie Database (IMDb): `title.basics` and `title.ratings`. The raw data files were downloaded programmatically and processed to create a joint data set.
+
+The objective of this report is to:
+
+-   Clearly define the structure and variables of the original and merged data sets.
+
+-   Provide summary statistics for key metrics.
+
+## 2. Data Acquisition and Preparation
+
+The data was obtained using an R function that programmatically downloads the compressed TSV files from the IMDb data set website. This function checks for a local copy before downloading to avoid extra operations.
+
+**Content of Original Files**
+
+The two original sources contained the following information:
+
+1.  `title.basics.tsv.gz`
+
+| Variable | Category of data | Operationalization |
+|--------------|-----------------------------|-----------------------------|
+| `tconst`  | string | Unique alphanumeric identifier for the title |
+| `titleType` | string | The type/format of the title |
+| `primaryTitle`  | string | The most popular title used for promotional materials |
+| `originalTitle`  | string | Original title, in the original language |
+| `isAdult`  | boolean | 0: non-adult title; 1: adult title |
+| `startYear`  | Integer | Release year of the title |
+| `endYear`  | Integer | End year for TV series |
+| `runtimeMinutes`  | Integer | Primary runtime in minutes. |
+| `genres`  | string array | Up to three genres associated with the title |
+
+2.  `title.ratings.tsv.gz`
+
+    | Variable | Category of data | Operationalization |
+    |----|----|----|
+    | `tconst` | string | Unique alphanumeric identifier to link back to the basics file |
+    | `averageRating` | Continuous | Weighted average of all user ratings |
+    | `numVotes` | Integer | Total number of votes the title has received |
+
+**Preparation process**
+
+The preparation process involved the following steps:
+
+1.  Loading the `title.basics` and `title.ratings` data sets.
+
+2.  The two data sets were merged using a left join on their common identifier, \``tconst`\`.
+
+3.  The raw value \`\\N\` was interpreted as a missing value (\`NA\`).
+
+4.  Filtering for movies where `titleType == "movie"`, discarding all TV shows, shorts, etc.
+
+5.  Filtering for popularity where only movies that have received 250 or more votes (`numVotes >= 250`).
+
+6.  Filtering by run time and genre, removing any movies with missing `runtimeMinutes` or `genres`. It also filters out outliers by only keeping movies with a run time between 30 and 250 minutes.
+
+7.  \``startYear`\` and \``runtimeMinutes`\` were converted to a numeric format for analysis.
+
+8.  Creating the variable `rating_category`, which classifies each movie into one of four categories ("Excellent", "Good", "Average", "Poor") based on its `averageRating`.
+
+9.  Renamng the columns to be more intuitive (e.g., `tconst` becomes `movie_id`, `averageRating` becomes `avg_rating`) and selects a final, clean set of columns in a logical order.
+
+10. Identifying the Top 3 Genres across the entire data set
+
+11. Creating a dummy variable, for each one of the top genres
+
+12. The script concludes by calling the `process_movie_data` function to execute all the steps above and produce the final, clean file.
+
+```{r data-download, include=FALSE}
+
+# Create a "data" directory if it doesn't already exist
+if(!dir.exists("data")){dir.create("data")}
+
+# This function checks for a local copy of a data file. If not found, it downloads the file before reading it into a data frame.
+get_imdb_data <- function(url, file_name) {
+  
+  local_path <- file.path("data", file_name)
+  
+  # Download the file only if it doesn't already exist locally.
+  if (!file.exists(local_path)) {
+    options(timeout = 300)
+    download.file(url = url, destfile = local_path, mode = "wb")
+  }
+  
+  # Read the local zipped TSV file and return it as a tibble.
+  read_tsv(local_path)
+}
+
+# Download Steps 
+
+# URLs for the IMDb datasets
+url_basics <- "https://datasets.imdbws.com/title.basics.tsv.gz"
+url_ratings <- "https://datasets.imdbws.com/title.ratings.tsv.gz"
+
+# Load the 'title.basics' and 'title.ratings' data using the custom function.
+basics <- get_imdb_data(url_basics, "title.basics.tsv.gz")
+ratings <- get_imdb_data(url_ratings, "title.ratings.tsv.gz")
+
+# Prepare the names for the CSV output files (remove .gz part)
+basics_csv <- "data/basics.csv"
+ratings_csv <- "data/ratings.csv"
+
+# Write the data frames to CSV (without the .gz part in the filename)
+write_csv(basics, basics_csv)
+write_csv(ratings, ratings_csv)
+
+# Optionally, delete the original .tsv.gz files after conversion
+file.remove("data/title.basics.tsv.gz")
+file.remove("data/title.ratings.tsv.gz")
+    
+```
+
+## 3. Data Structure and Definition
+
+The final merged data set is comprised of
+
+### Variable Definitions
+
+The following table provides a clear definition for each key variable in the merged data set.
+
+|     |     |     |     |     |
+|-----|-----|-----|-----|-----|
+|     |     |     |     |     |
+|     |     |     |     |     |
+|     |     |     |     |     |
+|     |     |     |     |     |
+|     |     |     |     |     |
+|     |     |     |     |     |
+|     |     |     |     |     |
+
+## 4. Data Exploration
