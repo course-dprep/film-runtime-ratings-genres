@@ -51,7 +51,7 @@ ggplot(long_dummy, aes(x = genre_dummy, fill = rating_category)) +
   geom_bar(position = "fill") +
   scale_y_continuous(labels = scales::percent) +
   labs(
-    title = "Verdeling van rating_category per genre (dummy’s)",
+    title = "Distribution of rating_category by genre (dummy variables)",
     x = "Genre",
     y = "Percentage",
     fill = "Rating"
