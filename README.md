@@ -35,6 +35,7 @@ The variables included in the final dataset are presented in the variable operat
 
 ## Preview of Findings
 
+<img width="3000" height="1800" alt="Image" src="https://github.com/user-attachments/assets/c74c0f16-cdc2-44fd-9996-822b91db30e5" />
 -   Describe the gist of your findings (save the details for the final paper!)
 -   How are the findings/end product of the project deployed?
 -   Explain the relevance of these findings/product.
