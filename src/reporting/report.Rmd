@@ -59,10 +59,55 @@ Finally, using dummy variables for the three most frequent genres allowed for st
 
 
 
+## Results
 
-```{r results}
+```{r results, echo = FALSE}
+movies_clean <- read_csv(here("gen", "data_preparation", "output", "movies_clean.csv"))
+
+#Runtime versus Rating Category
+p3 <- ggplot(movies_clean, aes(x = rating_category, y = runtime_min, fill = rating_category)) +
+  geom_boxplot(outlier.alpha = 0.5) +
+  scale_fill_brewer(palette = "Greens") +
+  labs(
+    title = "Runtime (min) by Rating Category",
+    x = "Rating Category",
+    y = "Runtime (minutes)"
+  ) +
+  theme(legend.position = "none")
+
+print(p3)
 
 ```
+This graph shows the overall link between movie runtime and audience ratings. It reflects an overall tendency in which films with higher ratings, such as "Excellent" and "Good," have longer median runtimes than those with "Average" or "Poor" ratings. When all genres are included, this implies a positive relationship between film duration and perceived quality.
+
+```{r results, echo = FALSE}
+movies_clean <- read_csv(here("gen", "data_preparation", "output", "movies_clean.csv"))
+
+#Detect all dummy columns automatically (adjust when dataset changes)
+str_detect(names(movies_clean), "_dummy$")
+dummy_cols <- names(movies_clean)[str_detect(names(movies_clean), "_dummy$")]
+
+#Runtime by Rating Category, Faceted by Dummy Genre 
+if (length(dummy_cols) > 0) {
+  p6 <- ggplot(long_dummy, aes(x = rating_category, y = runtime_min, fill = rating_category)) +
+    geom_boxplot(outlier.alpha = 0.5) +
+    facet_wrap(~ genre_dummy) +
+    scale_fill_brewer(palette = "Set2") +
+    labs(
+      title = "Runtime by Rating Category (Faceted by Top-3 Genres)",
+      x = "Rating Category",
+      y = "Runtime (min)"
+    ) +
+    theme(legend.position = "none")
+  
+  print(p6)
+}
+
+```
+
+The second graph breaks this relationship into the top three genres: comedy, drama, and romance. Within each genre, the trend that longer runtimes lead to higher scores holds true. However, it also shows considerable differences between genres, with dramas consistently lasting longer than comedies at all rating levels.
+
+Comparing the two graphs shows how genre influences the relationship between runtime and rating. The first graph shows the general rule that longer films receive higher ratings. The second graph demonstrates that the concept of a "long" or "short" film is genre-specific. For example, a highly scored comedy is much shorter than a highly rated drama, demonstrating that audience expectations for length vary depending on the sort of film.
 
 ## Implications
 
