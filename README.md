@@ -90,6 +90,7 @@ By running the following code: **install.packages(c("tidyverse", "dplyr", "readr
   
 - **Git** - Please follow these instructions to install Git on your computer https://tilburgsciencehub.com/topics/Automation/version-control/start-git/git/
 - **Make** - Please follow these instructions to install Make on your coputer https://tilburgsciencehub.com/topics/Automation/automation-tools/Makefiles/make/
+- **Pandoc** - Please follow these instructions to install Pandoc on your computer https://pandoc.org/installing.html
 
 ## Running Instructions
 
