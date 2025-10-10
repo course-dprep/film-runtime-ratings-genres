@@ -34,7 +34,7 @@ For this research, data from the IMBD database (basic.csv and rating.csv) were m
 
 Moreover, boxplots and bar charts were used to illustrate the distributions of runtimes and audience ratings across genres, making patterns and outliers easy to detect. These visualizations were chosen because they offer an overview of how runtime relates to rating both within and between genres. 
 
-Finally, a regression analysis was conducted to complement the visual exploration by quantifying the relationships and testing whether genre moderates the effect of runtime on audience rating. Using dummy variables for the three most frequent genres allowed for straightforward interpretation of genre specific effects. Together, these methods provide a clear and structured approach to examining the assumed relationship between film runtime, genre, and audience ratings. 
+Finally, using dummy variables for the three most frequent genres allowed for straightforward interpretation of genre specific effects. Together, these methods provide a clear and structured approach to examining the assumed relationship between film runtime, genre, and audience ratings. 
 
 ## Preview of Findings
 
