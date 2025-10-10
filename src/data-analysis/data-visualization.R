@@ -1,74 +1,205 @@
-install.packages("patchwork")
-library(patchwork)
-library(dplyr)
-library(tidyr)
-library(ggplot2)
+install.packages("stringr")
+library(stringr)
 
-#Define analysis output directory
-analysis_output_dir <- here("gen", "data_analysis", "output")
-
-#Create analysis output directory if it doesn't exist
-if(!dir.exists(analysis_output_dir)) {
-  dir.create(analysis_output_dir, recursive = TRUE)
-  message(paste("Analysis output directory created at:", analysis_output_dir))
-} else {
-  message(paste("Analysis output directory already exists at:", analysis_output_dir))
-}
-
-#Load the cleaned dataset for modeling
+#Check if output directory already exists
 movies_clean <- read_csv(here("gen", "data_preparation", "output", "movies_clean.csv"))
 
-#Top 3 genres
-top3_genres <- movies_clean %>%
+#Detect all dummy columns automatically (adjust when dataset changes)
+str_detect(names(movies_clean), "_dummy$")
+dummy_cols <- names(movies_clean)[str_detect(names(movies_clean), "_dummy$")]
+
+#Loop over each dummy genre to plot runtime by rating_category
+for (d in dummy_cols) {
+  genre_name <- str_remove(d, "_dummy$")
+  
+  p <- ggplot(movies_clean %>% filter(.data[[d]] == 1),
+              aes(x = rating_category, y = runtime_min, fill = rating_category)) +
+    geom_boxplot(outlier.alpha = 0.5) +
+    labs(
+      title = paste("Runtime by Rating Category –", genre_name),
+      x = "Rating Category",
+      y = "Runtime (min)"
+    ) +
+    theme(legend.position = "none")
+  
+  print(p)
+  
+  ggsave(file.path(plot_dir, paste0("runtime_by_rating_category_", genre_name, ".png")),
+         plot = p, width = 7, height = 5, dpi = 300)
+}
+
+#Reshape data for plotting (one row per dummy genre)
+long_dummy <- movies_clean %>%
+  pivot_longer(cols = all_of(dummy_cols),
+               names_to = "genre_dummy",
+               values_to = "is_genre") %>%
+  filter(is_genre == 1) %>%
+  mutate(genre_dummy = str_remove(genre_dummy, "_dummy$"))
+
+#Plot rating distribution per dummy genre
+ggplot(long_dummy, aes(x = genre_dummy, fill = rating_category)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    title = "Distribution of rating_category by genre (dummy variables)",
+    x = "Genre",
+    y = "Percentage",
+    fill = "Rating"
+  )
+
+# Ensure rating_category is an ordered factor
+movies_clean <- movies_clean %>%
+  mutate(
+    rating_category = factor(
+      rating_category,
+      levels = c("Poor", "Average", "Good", "Excellent"),
+      ordered = TRUE
+    )
+  )
+
+# Define plot output directory 
+plot_dir <- here("gen", "data_analysis", "output")
+if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+
+#Set a clean base theme for all plots 
+theme_set(theme_minimal(base_size = 12))
+
+#Dummy columns 
+dummy_cols <- names(movies_clean)[str_detect(names(movies_clean), "_dummy$")]
+
+#Top genres from genre_list
+top_genres <- movies_clean %>%
   separate_rows(genre_list, sep = ",") %>%
   mutate(genre_list = str_trim(genre_list)) %>%
+  filter(!is.na(genre_list), genre_list != "") %>%
   count(genre_list, sort = TRUE) %>%
-  slice_head(n = 3) %>%
-  pull(genre_list)
+  slice_head(n = 3) 
 
-#Function for scatterplots
-make_scatterplot <- function(df, genre_name) {
-  ggplot(filter(df, primary_genre == genre_name),
-         aes(x = runtime_min, y = avg_rating)) +
-    geom_point(alpha = 0.3, color = "darkblue") +
-    labs(title = paste("Runtime vs Rating -", genre_name),
-         x = "Runtime (minutes)", y = "Average Rating") +
-    theme_minimal()
-}
+p1 <- ggplot(top_genres, aes(x = reorder(genre_list, n), y = n)) +
+  geom_col(fill = "#69b3a2") +
+coord_flip() +
+  labs(
+    title = "Top 3 Genres in the Dataset",
+    x = "Genre",
+    y = "Number of Movies"
+  )
 
-#Scatterplot with a loop
-plots <- lapply(top3_genres, function(g) make_scatterplot(movies_clean, g))
+print(p1)
 
-#Combine and print 3 scatterplots
-print(wrap_plots(plots, ncol = 3))
+ggsave(file.path(plot_dir, "01_top3_genres.png"), plot = p1, width = 8, height = 6, dpi = 300)
 
-#Function for boxplots
-make_boxplot <- function(df, genre_name) {
-  ggplot(filter(df, primary_genre == genre_name),
-         aes(x = primary_genre, y = avg_rating, fill = primary_genre)) +
-    geom_boxplot() +
-    labs(title = paste("Ratings Distribution -", genre_name),
-         x = "Genre", y = "Average Rating") +
-    theme_minimal() +
-    theme(legend.position = "none")
-}
+#Distribution of rating_category
+p2 <- ggplot(movies_clean, aes(x = rating_category, fill = rating_category)) +
+  geom_bar() +
+  scale_fill_brewer(palette = "Blues") +
+  labs(
+    title = "Distribution of Rating Categories",
+    x = "Rating Category",
+    y = "Number of Movies"
+  ) +
+  theme(legend.position = "none")
 
-#Boxplot with a loop
-plots_box <- lapply(top3_genres, function(g) make_boxplot(movies_clean, g))
+print(p2)
 
-#Combine and print boxplots
-print(wrap_plots(plots_box, ncol = 3))
+ggsave(file.path(plot_dir, "02_rating_category_distribution.png"), plot = p2, width = 7, height = 5, dpi = 300)
 
-#Combine scatterplots and boxplots
-final_plot <- (wrap_plots(plots, ncol = 3)) /
-  (wrap_plots(plots_box, ncol = 3))
+#Runtime versus Rating Category
+p3 <- ggplot(movies_clean, aes(x = rating_category, y = runtime_min, fill = rating_category)) +
+  geom_boxplot(outlier.alpha = 0.5) +
+  scale_fill_brewer(palette = "Greens") +
+  labs(
+    title = "Runtime (min) by Rating Category",
+    x = "Rating Category",
+    y = "Runtime (minutes)"
+  ) +
+  theme(legend.position = "none")
 
-print(final_plot)
+print(p3)
 
-ggsave(
-  filename = file.path(getwd(), "final_plot.png"),
-  plot = final_plot,                               
-  width = 12, height = 8,                          
-  dpi = 300                                        
-)
+ggsave(file.path(plot_dir, "03_runtime_by_rating_category.png"), plot = p3, width = 7, height = 5, dpi = 300)
+
+#Num Votes versus Rating Category (log scale) 
+p4 <- ggplot(movies_clean, aes(x = rating_category, y = num_votes, fill = rating_category)) +
+  geom_boxplot(outlier.alpha = 0.5) +
+  scale_y_log10() +
+  scale_fill_brewer(palette = "Oranges") +
+  labs(
+    title = "Number of Votes by Rating Category (log scale)",
+    x = "Rating Category",
+    y = "Number of Votes (log10)"
+  ) +
+  theme(legend.position = "none")
+
+print(p4)
+
+ggsave(file.path(plot_dir, "04_num_votes_by_rating_category_log.png"), plot = p4, width = 7, height = 5, dpi = 300)
+
+#Share of Rating Category within each Top-3 Dummy Genre
+if (length(dummy_cols) > 0) {
+  long_dummy <- movies_clean %>%
+    pivot_longer(cols = all_of(dummy_cols), names_to = "genre_dummy", values_to = "is_genre") %>%
+    filter(is_genre == 1) %>%
+    mutate(genre_dummy = str_remove(genre_dummy, "_dummy$"))
   
+  p5 <- ggplot(long_dummy, aes(x = genre_dummy, fill = rating_category)) +
+    geom_bar(position = "fill") +
+    scale_y_continuous(labels = scales::percent) +
+    scale_fill_brewer(palette = "Purples") +
+    labs(
+      title = "Share of Rating Categories within Top Genres (Dummy Columns)",
+      x = "Top Genre",
+      y = "Share of Movies (%)",
+      fill = "Rating Category"
+    )
+  
+  print(p5)
+  
+  ggsave(file.path(plot_dir, "05_share_rating_by_top_genre_dummies.png"), plot = p5, width = 8, height = 6, dpi = 300)
+}
+
+#Runtime by Rating Category, Faceted by Dummy Genre 
+if (length(dummy_cols) > 0) {
+  p6 <- ggplot(long_dummy, aes(x = rating_category, y = runtime_min, fill = rating_category)) +
+    geom_boxplot(outlier.alpha = 0.5) +
+    facet_wrap(~ genre_dummy) +
+    scale_fill_brewer(palette = "Set2") +
+    labs(
+      title = "Runtime by Rating Category (Faceted by Top-3 Genres)",
+      x = "Rating Category",
+      y = "Runtime (min)"
+    ) +
+    theme(legend.position = "none")
+  
+  print(p6)
+  
+  ggsave(file.path(plot_dir, "06_runtime_by_rating_category_faceted_by_dummies.png"), plot = p6, width = 10, height = 6, dpi = 300)
+}
+
+#Number of Votes by Rating Category, Faceted by Dummy Genre
+if (length(dummy_cols) > 0) {
+  p7 <- ggplot(long_dummy, aes(x = rating_category, y = num_votes, fill = rating_category)) +
+    geom_boxplot(outlier.alpha = 0.5) +
+    scale_y_log10() +
+    facet_wrap(~ genre_dummy) +
+    scale_fill_brewer(palette = "Set3") +
+    labs(
+      title = "Num Votes by Rating Category (Faceted by Top-3 Genres, Log Scale)",
+      x = "Rating Category",
+      y = "Number of Votes (log10)"
+    ) +
+    theme(legend.position = "none")
+  
+  print(p7)
+  
+  ggsave(file.path(plot_dir, "07_num_votes_by_rating_category_faceted_by_dummies_log.png"), plot = p7, width = 10, height = 6, dpi = 300)
+}
+
+#Crosstab Summary 
+if (length(dummy_cols) > 0) {
+  ct <- long_dummy %>%
+    count(genre_dummy, rating_category) %>%
+    group_by(genre_dummy) %>%
+    mutate(share = n / sum(n)) %>%
+    ungroup()
+  write_csv(ct, file.path(plot_dir, "08_crosstab_rating_category_by_dummy.csv"))
+}
