@@ -62,7 +62,7 @@ Finally, using dummy variables for the three most frequent genres allowed for st
 ## Results
 
 ```{r results, echo = FALSE}
-movies_clean <- read_csv(here("gen", "data_preparation", "output", "movies_clean.csv"))
+movies_clean <- read_csv(here("gen", "data_preparation", "output", "movies_clean.csv"), show_col_types = FALSE))
 
 #Runtime versus Rating Category
 p3 <- ggplot(movies_clean, aes(x = rating_category, y = runtime_min, fill = rating_category)) +
@@ -81,7 +81,7 @@ print(p3)
 This graph shows the overall link between movie runtime and audience ratings. It reflects an overall tendency in which films with higher ratings, such as "Excellent" and "Good," have longer median runtimes than those with "Average" or "Poor" ratings. When all genres are included, this implies a positive relationship between film duration and perceived quality.
 
 ```{r results, echo = FALSE}
-movies_clean <- read_csv(here("gen", "data_preparation", "output", "movies_clean.csv"))
+movies_clean <- read_csv(here("gen", "data_preparation", "output", "movies_clean.csv"), show_col_types = FALSE))
 
 #Detect all dummy columns automatically (adjust when dataset changes)
 str_detect(names(movies_clean), "_dummy$")
