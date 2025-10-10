@@ -3,7 +3,7 @@ all: analysis data-preparation
 data-preparation:
 	make -C src/data-preparation
 
-analysis: 
+analysis: data-preparation
 	make -C src/data-analysis
 	
 
