@@ -204,15 +204,3 @@ if (length(dummy_cols) > 0) {
     ungroup()
   write_csv(ct, file.path(plot_dir, "08_crosstab_rating_category_by_dummy.csv"))
 }
-
-#Regression Analysis: Runtime × Genre on Rating
-dummy_cols <- names(movies_clean)[str_detect(names(movies_clean), "_dummy$")]
-print(dummy_cols)
-
-#for (d in dummy_cols) {
-  genre_name <- str_remove(d, "_dummy$")
-  model <- lm(avg_rating ~ runtime_min * .data[[d]], data = movies_clean)
-  cat("\n-----------------------------------------\n")
-  cat("Regression results for:", genre_name, "\n")
-  print(summary(model))
-
