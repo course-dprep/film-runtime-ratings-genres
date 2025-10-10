@@ -76,7 +76,7 @@ The two original sources contained the following information:
     | `averageRating` | Continuous | Weighted average of all user ratings |
     | `numVotes` | Integer | Total number of votes the title has received |
 
-
+```{r, echo=FALSE }
 # Create a "data" directory if it doesn't already exist
 if(!dir.exists("data")){dir.create("data")}
 
