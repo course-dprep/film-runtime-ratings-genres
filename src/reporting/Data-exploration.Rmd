@@ -46,7 +46,7 @@ The objective of this report is to:
 
 -   Provide summary statistics for key metrics.
 
-## 2. Data Acquisition and Preparation
+## 2. Data Acquisition
 
 The data was obtained using an R function that programmatically downloads the compressed TSV files from the IMDb data set website. This function checks for a local copy before downloading to avoid extra operations.
 
@@ -76,35 +76,6 @@ The two original sources contained the following information:
     | `averageRating` | Continuous | Weighted average of all user ratings |
     | `numVotes` | Integer | Total number of votes the title has received |
 
-**Preparation process**
-
-The preparation process involved the following steps:
-
-1.  Loading the `title.basics` and `title.ratings` data sets.
-
-2.  The two data sets were merged using a left join on their common identifier, \``tconst`\`.
-
-3.  The raw value \`\\N\` was interpreted as a missing value (\`NA\`).
-
-4.  Filtering for movies where `titleType == "movie"`, discarding all TV shows, shorts, etc.
-
-5.  Filtering for popularity where only movies that have received 250 or more votes (`numVotes >= 250`).
-
-6.  Filtering by run time and genre, removing any movies with missing `runtimeMinutes` or `genres`. It also filters out outliers by only keeping movies with a run time between 30 and 250 minutes.
-
-7.  \``startYear`\` and \``runtimeMinutes`\` were converted to a numeric format for analysis.
-
-8.  Creating the variable `rating_category`, which classifies each movie into one of four categories ("Excellent", "Good", "Average", "Poor") based on its `averageRating`.
-
-9.  Renamng the columns to be more intuitive (e.g., `tconst` becomes `movie_id`, `averageRating` becomes `avg_rating`) and selects a final, clean set of columns in a logical order.
-
-10. Identifying the Top 3 Genres across the entire data set
-
-11. Creating a dummy variable, for each one of the top genres
-
-12. The script concludes by calling the `process_movie_data` function to execute all the steps above and produce the final, clean file.
-
-```{r data-download, include=FALSE}
 
 # Create a "data" directory if it doesn't already exist
 if(!dir.exists("data")){dir.create("data")}
@@ -206,7 +177,9 @@ library(ggplot2)
 
 # Histogram of movie runtime
 basics <- basics %>%
-  mutate(runtimeMinutes = as.numeric(runtimeMinutes))
+  mutate(runtimeMinutes = as.numeric(runtimeMinutes)) %>%
+  filter(!is.na(runtimeMinutes))
+
 ggplot(basics, aes(x = runtimeMinutes)) +
   geom_histogram(binwidth = 10, fill = "pink", color = "black") +
   labs(title = "Distribution of Movie Runtime", x = "Runtime (minutes)", y = "Count") +
@@ -260,7 +233,37 @@ ggplot(ratings, aes(x = averageRating)) +
 
 Having explored the dataset and its key variables, it is clear how to proceed with data cleaning and preparation for the analysis.
 
-## 4. Data Structure and Definition
+## 4. Preparation, Data Structure and Definition
+
+**Preparation process**
+
+The preparation process involved the following steps:
+
+1.  Loading the `title.basics` and `title.ratings` data sets.
+
+2.  The two data sets were merged using a left join on their common identifier, \``tconst`\`.
+
+3.  The raw value \`\\N\` was interpreted as a missing value (\`NA\`).
+
+4.  Filtering for movies where `titleType == "movie"`, discarding all TV shows, shorts, etc.
+
+5.  Filtering for popularity where only movies that have received 250 or more votes (`numVotes >= 250`).
+
+6.  Filtering by run time and genre, removing any movies with missing `runtimeMinutes` or `genres`. It also filters out outliers by only keeping movies with a run time between 30 and 250 minutes.
+
+7.  \``startYear`\` and \``runtimeMinutes`\` were converted to a numeric format for analysis.
+
+8.  Creating the variable `rating_category`, which classifies each movie into one of four categories ("Excellent", "Good", "Average", "Poor") based on its `averageRating`.
+
+9.  Renaming the columns to be more intuitive (e.g., `tconst` becomes `movie_id`, `averageRating` becomes `avg_rating`) and selects a final, clean set of columns in a logical order.
+
+10. Identifying the Top 3 Genres across the entire data set
+
+11. Creating a dummy variable, for each one of the top genres
+
+12. The script concludes by calling the `process_movie_data` function to execute all the steps above and produce the final, clean file.
+
+```{r data-download, include=FALSE}
 
 After, merging, cleaning, and filtering the two raw IMDb datasets, the final data set `movies_clean` consists of about 93,000 observations. The variables included in the final dataset are presented in the following table:
 
@@ -273,3 +276,5 @@ After, merging, cleaning, and filtering the two raw IMDb datasets, the final dat
 | avg_rating | source variable | metric | Audience rating of each movie on a scale of 0 to 10 | title.ratings.tsv |
 | genre_list | source variable | categorical | Genre(s) of each movie | title.basics.tsv | 
 | num_votes | control variable | numeric | Total number of ratings a movie received | title.ratings.tsv |
+
+
