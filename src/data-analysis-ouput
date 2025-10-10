@@ -1,18 +1,9 @@
-getwd()
 
 install.packages("stringr")
-install.packages("dplyr")
-install.packages("tidyr")
-install.packages("tidyverse")
-install.packages("ggplot2")
-install.packages("here")
 
 library(stringr)
-library(dplyr)
-library(tidyr)
-library (tidyverse)
-library(ggplot2)
-library(here)
+
+movies_clean <- read_csv(movies_clean.csv")
 
 #Detect all dummy columns automatically (adjust when dataset changes)
 str_detect(names(movies_clean), "_dummy$")
