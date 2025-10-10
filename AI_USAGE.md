@@ -4,7 +4,7 @@ This file documents the use of Artificial intelligence (AI) tools within this pr
 AI_usage:
 Model: ChatGPT5 
 provider: openAI
-- Understand how to correctly use a loop function in R
+- To understand how to correctly use a loop function in R
 - Determine appropriate values for 'width', 'height' and 'dpi' parameters when using 'ggsave()' to export plots
 - Improve basic codes and ideas in data-preparation/data-download, data-preparation/data-exploration, data-preparation/data-preparation, data-analysis/data-analysis, data-analysis/data-visualization
 - Improve grammar of a sentence
@@ -14,3 +14,4 @@ provider: openAI
 - Find out which model (the model with moderator) fits best with the data and create code for this regression
 - Find out how to save the regression outputs
 - Find out how to create a repository overview as a tree
+- To understand how to apply the dummy variable to the other variables in the ggplot
