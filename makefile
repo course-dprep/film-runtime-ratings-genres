@@ -1,4 +1,6 @@
-all: analysis data-preparation
+.PHONY: all data-preparation analysis reporting
+
+all: analysis data-preparation reporting
 
 data-preparation:
 	make -C src/data-preparation
@@ -6,6 +8,8 @@ data-preparation:
 analysis: data-preparation
 	make -C src/data-analysis
 	
+reporting: data-preparation analysis
+	make -C src/reporting
 
 #main makefile!
 #check paths, maybe src/data-analysis/data-analysis

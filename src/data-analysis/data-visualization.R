@@ -1,4 +1,4 @@
-install.packages("stringr")
+#install.packages("stringr")
 library(stringr)
 
 #Check if output directory already exists
