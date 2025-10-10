@@ -1,8 +1,6 @@
 ---
 title: "Data exploration"
 output:
-  html_document:
-    df_print: paged
   pdf_document: default
 date: "2025-10-10"
 ---
@@ -40,11 +38,11 @@ knitr::opts_chunk$set(
 
 ## 1. Introduction
 
-This report provides a comprehensive analysis of a data set created by merging two files from the Internet Movie Database (IMDb): `title.basics` and `title.ratings`. The raw data files were downloaded programmatically and processed to create a joint data set.
+This report provides a comprehensive analysis of two datasets from the Internet Movie Database (IMDb): `title.basics` and `title.ratings`. The raw data files were downloaded programmatically and eventually processed to create a joint data set.
 
 The objective of this report is to:
 
--   Clearly define the structure and variables of the original and merged data sets.
+-   Clearly define the structure and variables of the original data sets.
 
 -   Provide summary statistics for key metrics.
 
@@ -150,29 +148,11 @@ file.remove("data/title.ratings.tsv.gz")
     
 ```
 
-## 3. Data Structure and Definition
+## 3. Data Exploration
 
-The final merged data set is comprised of
+This section provides an overview of the two raw IMDb data files: `title.basics` and `title.ratings`. The structure, rows, columns, and variable types will be explored and previews and summaries of the data will be provided to get a good understanding of what the raw data looks like. It is important to understand the content of the files before merging, cleaning, and filtering them.
 
-### Variable Definitions
-
-The following table provides a clear definition for each key variable in the merged data set.
-
-|     |     |     |     |     |
-|-----|-----|-----|-----|-----|
-|     |     |     |     |     |
-|     |     |     |     |     |
-|     |     |     |     |     |
-|     |     |     |     |     |
-|     |     |     |     |     |
-|     |     |     |     |     |
-|     |     |     |     |     |
-
-## 4. Data Exploration
-
-This section provides an overview of the two raw IMDb data files: `title.basics` and `title.ratings`. The structure, rows, columns, and variable types will explored and previews and summaries of the data will be provided to get a good understanding of what the raw data looks like. It is important to understand the content of the files before merging, cleaning, and filtering them.
-
-### 4.1 Exploring `title.basics`
+### 3.1 Exploring `title.basics`
 
 First, the `title.basics` dataset will be explored to understand its structure, variable types, and content. This exploration will help confirm that the data is correctly formatted and identify any potential issues that need to be solved. 
 
@@ -205,7 +185,7 @@ Checking for missing values ensures knowledge on which variables might need clea
 colSums(is.na(basics))
 ```
 
-Genre is the moderator in this research and it is therefore important to have some insight into this variable. The following table shows the top 5 most common genres in the dataset. 
+Genre is the moderator in this research and it is therefore important to gain some insight into this variable. The following table shows the top 5 most common genres in the dataset. 
 ```{r genres exploration, echo=FALSE}
 library(dplyr)
 library(tidyr)
@@ -225,18 +205,19 @@ Runtime is the independent variable in this study, and its distribution is exami
 library(ggplot2)
 
 # Histogram of movie runtime
+basics <- basics %>%
+  mutate(runtimeMinutes = as.numeric(runtimeMinutes))
 ggplot(basics, aes(x = runtimeMinutes)) +
-  geom_histogram(binwidth = 10, fill = "skyblue", color = "black") +
+  geom_histogram(binwidth = 10, fill = "pink", color = "black") +
   labs(title = "Distribution of Movie Runtime", x = "Runtime (minutes)", y = "Count") +
   theme_minimal()
 ```
 
-### 4.2 Exploring `title.ratings`
+### 3.2 Exploring `title.ratings`
 
 Second, the `title.ratings` dataset will be explored in the same manner to gain deeper insights.
 
 The number of rows and columns provides an overview of the size of the dataset.
-
 ```{r rows and columns of ratings, echo=FALSE}
 # Provide the number of rows and columns
 cat("Number of rows:", nrow(ratings), "\n")
@@ -267,9 +248,10 @@ colSums(is.na(ratings))
 Ratings is the dependent variable in this research and the following histogram will show how ratings are dsitributed in the dataset. 
 ```{r histogram ratings, echo=FALSE}
 library(ggplot2)
-
+ratings <- ratings %>%
+  mutate(averageRating = as.numeric(averageRating))
 ggplot(ratings, aes(x = averageRating)) +
-  geom_histogram(binwidth = 0.5, fill = "tomato", color = "black") +
+  geom_histogram(binwidth = 0.5, fill = "skyblue", color = "black") +
   labs(title = "Distribution of IMDb Average Ratings",
        x = "Average Rating",
        y = "Count") +
@@ -277,3 +259,17 @@ ggplot(ratings, aes(x = averageRating)) +
 ```
 
 Having explored the dataset and its key variables, it is clear how to proceed with data cleaning and preparation for the analysis.
+
+## 4. Data Structure and Definition
+
+After, merging, cleaning, and filtering the two raw IMDb datasets, the final data set `movies_clean` consists of about 93,000 observations. The variables included in the final dataset are presented in the following table:
+
+| variable | type | category of data | operationalization | dataset |
+|----|----|----|----|----|
+| runtime_min | independent variable | metric | Run time of each movie in minutes | title.basics.tsv |
+| rating_category | dependent variable | categorical | Audience rating of each movie: poor, average, good, or excellent | derived from avg_rating |
+| genre dummies | moderator | categorical | Indicates whether the movie is of a certain genre | derived from genre_list |
+| movie_id | identifier | numeric | ID of the movie | title.basics.tsv/title.ratings.tsv |
+| avg_rating | source variable | metric | Audience rating of each movie on a scale of 0 to 10 | title.ratings.tsv |
+| genre_list | source variable | categorical | Genre(s) of each movie | title.basics.tsv | 
+| num_votes | control variable | numeric | Total number of ratings a movie received | title.ratings.tsv |
