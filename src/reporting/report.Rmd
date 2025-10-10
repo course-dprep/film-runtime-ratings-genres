@@ -90,29 +90,34 @@ movies_clean <- read_csv(here("gen", "data_preparation", "output", "movies_clean
 dummy_cols <- names(movies_clean)[str_detect(names(movies_clean), "_dummy$")]
 
 #Top genres from genre_list
-top_genres <- movies_clean %>%
+top_genres_names <- movies_clean %>%
   separate_rows(genre_list, sep = ",") %>%
   mutate(genre_list = str_trim(genre_list)) %>%
   filter(!is.na(genre_list), genre_list != "") %>%
   count(genre_list, sort = TRUE) %>%
-  slice_head(n = 3) 
+  slice_head(n = 3) %>%
+  pull(genre_list) 
 
+# Reshape the data and filter it to only include movies from the top 3 genres
+plot_data <- movies_clean %>%
+  separate_rows(genre_list, sep = ",") %>%
+  mutate(genre_list = str_trim(genre_list)) %>%
+  filter(genre_list %in% top_genres_names)
 
-#Runtime by Rating Category, Faceted by Dummy Genre 
-if (length(dummy_cols) > 0) {
-  p6 <- ggplot(long_dummy, aes(x = rating_category, y = runtime_min, fill = rating_category)) +
-    geom_boxplot(outlier.alpha = 0.5) +
-    facet_wrap(~ genre_dummy) +
-    scale_fill_brewer(palette = "Set2") +
-    labs(
-      title = "Runtime by Rating Category (Faceted by Top-3 Genres)",
-      x = "Rating Category",
-      y = "Runtime (min)"
-    ) +
-    theme(legend.position = "none")
-  
-  print(p6)
-}
+# Create and print the plo
+p6 <- ggplot(plot_data, aes(x = rating_category, y = runtime_min, fill = rating_category)) +
+  geom_boxplot(outlier.alpha = 0.5) +
+  # Facet by the actual genre column
+  facet_wrap(~ genre_list) +
+  scale_fill_brewer(palette = "Set2") +
+  labs(
+    title = "Runtime by Rating Category (Faceted by Top-3 Genres)",
+    x = "Rating Category",
+    y = "Runtime (min)"
+  ) +
+  theme(legend.position = "none")
+
+print(p6)
 
 ```
 
