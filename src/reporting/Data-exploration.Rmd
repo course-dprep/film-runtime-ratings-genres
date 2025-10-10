@@ -76,7 +76,7 @@ The two original sources contained the following information:
     | `averageRating` | Continuous | Weighted average of all user ratings |
     | `numVotes` | Integer | Total number of votes the title has received |
 
-```{r, echo=FALSE }
+```{r, include=FALSE }
 # Create a "data" directory if it doesn't already exist
 if(!dir.exists("data")){dir.create("data")}
 
@@ -262,8 +262,6 @@ The preparation process involved the following steps:
 11. Creating a dummy variable, for each one of the top genres
 
 12. The script concludes by calling the `process_movie_data` function to execute all the steps above and produce the final, clean file.
-
-```{r data-download, include=FALSE}
 
 After, merging, cleaning, and filtering the two raw IMDb datasets, the final data set `movies_clean` consists of about 93,000 observations. The variables included in the final dataset are presented in the following table:
 
