@@ -1,4 +1,19 @@
 ---
+title: "Data exploration"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+date: "2025-10-10"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+---
 title: "Data Exploration: Analysis of Combined IMDb Title Basics and Ratings Data"
 
 author: "Group 6: Roos van den Berg, Jelle van der Eng, Dana Raats, Renata Serrano "
@@ -7,7 +22,7 @@ date: "2025-10-10"
 output: pdf_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup2, include=FALSE}
 
 # 1. Load necessary packages
 library(tidyverse)
@@ -154,3 +169,111 @@ The following table provides a clear definition for each key variable in the mer
 |     |     |     |     |     |
 
 ## 4. Data Exploration
+
+This section provides an overview of the two raw IMDb data files: `title.basics` and `title.ratings`. The structure, rows, columns, and variable types will explored and previews and summaries of the data will be provided to get a good understanding of what the raw data looks like. It is important to understand the content of the files before merging, cleaning, and filtering them.
+
+### 4.1 Exploring `title.basics`
+
+First, the `title.basics` dataset will be explored to understand its structure, variable types, and content. This exploration will help confirm that the data is correctly formatted and identify any potential issues that need to be solved. 
+
+The number of rows and columns provides an overview of the size of the dataset.
+
+```{r rows and columns of basics, echo=FALSE}
+# Provide the number of rows and columns
+cat("Number of rows:", nrow(basics), "\n")
+cat("Number of columns:", ncol(basics), "\n")
+```
+
+The structure of the dataset shows the types of variables included and if they are correctly formatted.
+```{r structure of basics, echo=FALSE}
+# Provide the structure
+str(basics)
+```
+
+A preview of the dataset provides insight into the contents.
+```{r preview of basics, echo=FALSE}
+head(basics)
+```
+
+The summary statistics provide information on numeric variables and help identify ranges, distributions, and potential outliers.
+```{r summary of basics, echo=FALSE}
+summary(basics)
+```
+
+Checking for missing values ensures knowledge on which variables might need cleaning before analysis.
+```{r missing values of basics, echo=FALSE}
+colSums(is.na(basics))
+```
+
+Genre is the moderator in this research and it is therefore important to have some insight into this variable. The following table shows the top 5 most common genres in the dataset. 
+```{r genres exploration, echo=FALSE}
+library(dplyr)
+library(tidyr)
+library(knitr)
+
+# Create table of top 5 genres
+basics %>%
+  filter(!is.na(genres)) %>%
+  separate_rows(genres, sep = ",") %>%
+  count(genres, sort = TRUE) %>%
+  head(5) %>%
+  kable(caption = "Top 5 Genres in the Dataset")
+```
+
+Runtime is the independent variable in this study, and its distribution is examined using a histogram.
+```{r runtime exploration, echo=FALSE}
+library(ggplot2)
+
+# Histogram of movie runtime
+ggplot(basics, aes(x = runtimeMinutes)) +
+  geom_histogram(binwidth = 10, fill = "skyblue", color = "black") +
+  labs(title = "Distribution of Movie Runtime", x = "Runtime (minutes)", y = "Count") +
+  theme_minimal()
+```
+
+### 4.2 Exploring `title.ratings`
+
+Second, the `title.ratings` dataset will be explored in the same manner to gain deeper insights.
+
+The number of rows and columns provides an overview of the size of the dataset.
+
+```{r rows and columns of ratings, echo=FALSE}
+# Provide the number of rows and columns
+cat("Number of rows:", nrow(ratings), "\n")
+cat("Number of columns:", ncol(ratings), "\n")
+```
+
+The structure of the dataset shows the types of variables included and if they are correctly formatted.
+```{r structure of ratings, echo=FALSE}
+# Provide the structure
+str(ratings)
+```
+
+A preview of the dataset provides insight into the contents.
+```{r preview of ratings, echo=FALSE}
+head(ratings)
+```
+
+The summary statistics provide information on numeric variables and help identify ranges, distributions, and potential outliers.
+```{r summary of ratings, echo=FALSE}
+summary(ratings)
+```
+
+Checking for missing values ensures knowledge on which variables might need cleaning before analysis.
+```{r missing values of ratings, echo=FALSE}
+colSums(is.na(ratings))
+```
+
+Ratings is the dependent variable in this research and the following histogram will show how ratings are dsitributed in the dataset. 
+```{r histogram ratings, echo=FALSE}
+library(ggplot2)
+
+ggplot(ratings, aes(x = averageRating)) +
+  geom_histogram(binwidth = 0.5, fill = "tomato", color = "black") +
+  labs(title = "Distribution of IMDb Average Ratings",
+       x = "Average Rating",
+       y = "Count") +
+  theme_minimal()
+```
+
+Having explored the dataset and its key variables, it is clear how to proceed with data cleaning and preparation for the analysis.
