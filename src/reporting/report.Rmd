@@ -23,11 +23,6 @@ library(tidyr)
 library(knitr)
 ```
 
-It needs to have: 1) set-up -\> this under the beginning part like the
-code and dont show it 2) Research Motivation 3) Research Method 4)
-Results (models +plot) 5) Theoretical / Practical Implications 6)
-Conclusion
-
 ## Research motivation
 
 In the highly competitive field of film making, every decision is
