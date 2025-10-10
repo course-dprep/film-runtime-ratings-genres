@@ -48,7 +48,26 @@ These findings are deployed through the modeling and visualization scripts, whic
 
 ## Repository Overview
 
-\*\*Include a tree diagram that illustrates the repository structure\*
+``` .
+├── README.md
+├── makefile
+├── repo_tree.txt
+└── src
+    ├── data-analysis
+    │   ├── data-analysis.R
+    │   ├── data-visualization.R
+    │   └── makefile
+    ├── data-preparation
+    │   ├── data-download.R
+    │   ├── data-exploration.R
+    │   ├── data-preparation.R
+    │   └── makefile
+    └── reporting
+        ├── Data-exploration.Rmd
+        ├── makefile
+        ├── report.Rmd
+        └── report_data_exploration.Rmd
+```
 
 ## Dependencies
 
