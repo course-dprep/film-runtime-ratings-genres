@@ -61,8 +61,9 @@ Finally, using dummy variables for the three most frequent genres allowed for st
 
 ## Results
 
-```{r results, echo = FALSE}
-movies_clean <- read_csv(here("gen", "data_preparation", "output", "movies_clean.csv"), show_col_types = FALSE))
+
+```{r results graph 1, echo = FALSE}
+movies_clean <- read_csv(here("gen", "data_preparation", "output", "movies_clean.csv"), show_col_types = FALSE)
 
 #Runtime versus Rating Category
 p3 <- ggplot(movies_clean, aes(x = rating_category, y = runtime_min, fill = rating_category)) +
@@ -78,14 +79,24 @@ p3 <- ggplot(movies_clean, aes(x = rating_category, y = runtime_min, fill = rati
 print(p3)
 
 ```
+
 This graph shows the overall link between movie runtime and audience ratings. It reflects an overall tendency in which films with higher ratings, such as "Excellent" and "Good," have longer median runtimes than those with "Average" or "Poor" ratings. When all genres are included, this implies a positive relationship between film duration and perceived quality.
 
-```{r results, echo = FALSE}
-movies_clean <- read_csv(here("gen", "data_preparation", "output", "movies_clean.csv"), show_col_types = FALSE))
 
-#Detect all dummy columns automatically (adjust when dataset changes)
-str_detect(names(movies_clean), "_dummy$")
+```{r results graph 2, echo = FALSE}
+movies_clean <- read_csv(here("gen", "data_preparation", "output", "movies_clean.csv"), show_col_types = FALSE)
+
+#Dummy columns 
 dummy_cols <- names(movies_clean)[str_detect(names(movies_clean), "_dummy$")]
+
+#Top genres from genre_list
+top_genres <- movies_clean %>%
+  separate_rows(genre_list, sep = ",") %>%
+  mutate(genre_list = str_trim(genre_list)) %>%
+  filter(!is.na(genre_list), genre_list != "") %>%
+  count(genre_list, sort = TRUE) %>%
+  slice_head(n = 3) 
+
 
 #Runtime by Rating Category, Faceted by Dummy Genre 
 if (length(dummy_cols) > 0) {
@@ -104,6 +115,7 @@ if (length(dummy_cols) > 0) {
 }
 
 ```
+
 
 The second graph breaks this relationship into the top three genres: comedy, drama, and romance. Within each genre, the trend that longer runtimes lead to higher scores holds true. However, it also shows considerable differences between genres, with dramas consistently lasting longer than comedies at all rating levels.
 
